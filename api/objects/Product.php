@@ -12,6 +12,7 @@ class Product{
     public $price;
     public $category_id;
     public $category_name;
+    public $image;
     public $created;
   
     // constructor with $db as database connection
@@ -49,7 +50,7 @@ function create(){
     $query = "INSERT INTO
                 " . $this->table_name . "
             SET
-                name=:name, price=:price, description=:description, category_id=:category_id, created=:created";
+                name=:name, price=:price, description=:description, category_id=:category_id, created=:created, image=:image";
   
     // prepare query
     $stmt = $this->conn->prepare($query);
@@ -60,6 +61,7 @@ function create(){
     $this->description=htmlspecialchars(strip_tags($this->description));
     $this->category_id=htmlspecialchars(strip_tags($this->category_id));
     $this->created=htmlspecialchars(strip_tags($this->created));
+    $this->image=htmlspecialchars(strip_tags($this->image));
   
     // bind values
     $stmt->bindParam(":name", $this->name);
@@ -67,6 +69,7 @@ function create(){
     $stmt->bindParam(":description", $this->description);
     $stmt->bindParam(":category_id", $this->category_id);
     $stmt->bindParam(":created", $this->created);
+    $stmt->bindParam(":image", $this->image);
   
     // execute query
     if($stmt->execute()){
@@ -87,7 +90,8 @@ function update(){
                 name = :name,
                 price = :price,
                 description = :description,
-                category_id = :category_id
+                category_id = :category_id,
+                image = :image
             WHERE
                 id = :id";
   
@@ -100,6 +104,8 @@ function update(){
     $this->description=htmlspecialchars(strip_tags($this->description));
     $this->category_id=htmlspecialchars(strip_tags($this->category_id));
     $this->id=htmlspecialchars(strip_tags($this->id));
+    $this->image=htmlspecialchars(strip_tags($this->image));
+
   
     // bind new values
     $stmt->bindParam(':name', $this->name);
@@ -107,7 +113,8 @@ function update(){
     $stmt->bindParam(':description', $this->description);
     $stmt->bindParam(':category_id', $this->category_id);
     $stmt->bindParam(':id', $this->id);
-  
+    $stmt->bindParam(":image", $this->image);
+
     // execute the query
     if($stmt->execute()){
         return true;
@@ -143,7 +150,7 @@ function readOne(){
   
     // query to read single record
     $query = "SELECT
-                c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created
+                c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created, p.image
             FROM
                 " . $this->table_name . " p
                 LEFT JOIN
@@ -172,6 +179,7 @@ function readOne(){
     $this->description = $row['description'];
     $this->category_id = $row['category_id'];
     $this->category_name = $row['category_name'];
+    $this->image = $row['image'];
 }
 
 // search products
@@ -179,7 +187,7 @@ function search($keywords){
   
     // select all query
     $query = "SELECT
-                c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created
+                c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created, p.image
             FROM
                 " . $this->table_name . " p
                 LEFT JOIN
@@ -213,7 +221,7 @@ public function readPaging($from_record_num, $records_per_page){
   
     // select query
     $query = "SELECT
-                c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created
+                c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created, p.image
             FROM
                 " . $this->table_name . " p
                 LEFT JOIN
@@ -245,6 +253,23 @@ public function count(){
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
   
     return $row['total_rows'];
+}
+
+function uploadImage($sqlValor){
+    if(!empty($sqlVal)) {
+        $query = ("INSERT INTO user (images, date_time) VALUES $sqlVal");
+        if($query) {
+            $response = array(
+                "status" => "alert-success",
+                "message" => "Files successfully uploaded."
+            );
+        } else {
+            $response = array(
+                "status" => "alert-danger",
+                "message" => "Files coudn't be uploaded due to database error."
+            );
+        }
+    }
 }
 
 

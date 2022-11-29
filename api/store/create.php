@@ -9,13 +9,13 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 // get database connection
 include_once '../config/database/Database.php';
 
-// instantiate product object
-include_once '../objects/Product.php';
+// instantiate store object
+include_once '../objects/Store.php';
   
 $database = new Database();
 $db = $database->getConnection();
   
-$product = new Product($db);
+$store = new Store($db);
   
 // get posted data
 $data = json_decode(file_get_contents("php://input"));
@@ -23,38 +23,34 @@ $data = json_decode(file_get_contents("php://input"));
 // make sure data is not empty
 if(
     !empty($data->name) &&
-    !empty($data->price) &&
-    !empty($data->description) &&
-    !empty($data->category_id) &&
-    !empty($data->image)
+    !empty($data->address) &&
+    !empty($data->cnpj)
 ){
   
-    // set product property values
-    $product->name = $data->name;
-    $product->price = $data->price;
-    $product->description = $data->description;
-    $product->category_id = $data->category_id;
-    $product->created = date('Y-m-d H:i:s');
-    $product->image;
+    // set store property values
+    $store->name = $data->name;
+    $store->address = $data->address;
+    $store->cnpj = $data->cnpj;
+    $store->created = date('Y-m-d H:i:s');
   
-    // create the product
-    if($product->create()){
+    // create the store
+    if($store->create()){
   
         // set response code - 201 created
         http_response_code(201);
   
         // tell the user
-        echo json_encode(array("message" => "Product was created."));
+        echo json_encode(array("message" => "store was created."));
     }
   
-    // if unable to create the product, tell the user
+    // if unable to create the store, tell the user
     else{
   
         // set response code - 503 service unavailable
         http_response_code(503);
   
         // tell the user
-        echo json_encode(array("message" => "Unable to create product."));
+        echo json_encode(array("message" => "Unable to create store."));
     }
 }
   
@@ -65,6 +61,6 @@ else{
     http_response_code(400);
   
     // tell the user
-    echo json_encode(array("message" => "Unable to create product. Data is incomplete."));
+    echo json_encode(array("message" => "Unable to create store. Data is incomplete."));
 }
 ?>

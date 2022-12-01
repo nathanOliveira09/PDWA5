@@ -3,3 +3,6 @@
 
 
 <H1> <a href="https://github.com/nathanOliveira09/PDWA5/tree/main/api"> Trabalho final - API REST PHP </H1>
+<H3>Realizado por:</H3>
+<p>Nathan Oliveira de Santana - SP3061469</p>
+<p>João Gabriel Galante - SP3060161</p>

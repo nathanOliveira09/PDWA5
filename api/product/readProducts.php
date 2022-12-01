@@ -19,7 +19,7 @@ $product = new Product($db);
 // read products will be here
 
 // query products
-$stmt = $product->read();
+$stmt = $product->readProducts();
 $num = $stmt->rowCount();
   
 // check if more than 0 record found

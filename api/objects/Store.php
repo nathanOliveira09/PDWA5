@@ -17,6 +17,12 @@ Class Store{
         $this->conn = $db;
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/store/readStores.php", tags={"Store"},
+     *     @OA\Response(response="200", description="Sucess")
+     * )
+     */
     // read stores
     function read(){
   
@@ -37,6 +43,21 @@ Class Store{
     return $stmt;
 }
 
+/**
+     * @OA\Post(
+     *     path="/api/store/create.php", tags={"Store"},
+     *     @OA\RequestBody(
+     *          @OA\MediaType(mediaType="application/json",
+     *              @OA\Schema(title="Criar Loja", description="", required={"name"}, type="object", 
+     *                  @OA\Property(property="name", title="name", type="string", description="name", example="Matriz - São Paulo"),
+     *                  @OA\Property(property="address", title="address", type="string", description="address", example="Rua Pedro Vicente, 625"),
+     *                  @OA\Property(property="cnpj", title="cnpj", type="string", description="cnpj", example="86146153000167"),
+     *                  @OA\Property(property="created", title="created", type="string", description="created", example="2018-06-01 00:35:07"))
+     *          )
+     *     ),
+     *     @OA\Response(response="201", description="Sucess"),
+     * )
+     */
 // create store
 function create(){
   
@@ -70,6 +91,21 @@ function create(){
       
 }
 
+// delete the product
+
+/**
+     * @OA\Post(
+     *     path="/api/store/delete.php", tags={"Store"},
+     *     @OA\RequestBody(
+     *          @OA\MediaType(mediaType="application/json",
+     *              @OA\Schema(title="Criar Produto", description="", required={"name"}, type="object", 
+     *                  @OA\Property(property="id", title="id", type="string", description="id", example="106"))
+     *          )
+     *     ),
+     *     @OA\Response(response="200", description="Sucess"),
+     *     @OA\Response(response="503", description="Object not found"),
+     * )
+     */
 // delete store
 function delete(){
   
@@ -94,6 +130,22 @@ function delete(){
 }
 
 // update the product
+/**
+     * @OA\Put(
+     *     path="/api/store/update.php", tags={"Store"},
+     *     @OA\RequestBody(
+     *          @OA\MediaType(mediaType="application/json",
+     *              @OA\Schema(title="Criar Loja", description="", required={"name"}, type="object", 
+     *                  @OA\Property(property="name", title="name", type="string", description="name", example="Matriz - São Paulo"),
+     *                  @OA\Property(property="address", title="address", type="string", description="address", example="Rua Pedro Vicente, 625"),
+     *                  @OA\Property(property="cnpj", title="cnpj", type="string", description="cnpj", example="86146153000167"),
+     *                  @OA\Property(property="created", title="created", type="string", description="created", example="2018-06-01 00:35:07"))
+     *          )
+     *     ),
+     *     @OA\Response(response="200", description="Sucess"),
+     *     @OA\Response(response="503", description="Object not found"),
+     * )
+     */
 function update(){
   
     // update query

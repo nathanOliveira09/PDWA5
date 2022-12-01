@@ -1,4 +1,8 @@
 <?php
+/**
+ * @OA\Info(title="API de produtos ", version="1.0")
+ */
+
 class Product{
   
     // database connection and table name
@@ -12,7 +16,6 @@ class Product{
     public $price;
     public $category_id;
     public $category_name;
-    public $image;
     public $created;
   
     // constructor with $db as database connection
@@ -21,8 +24,14 @@ class Product{
     }
 
     // read products
-function read(){
-  
+        
+    /**
+     * @OA\Get(
+     *     path="/api/product/readProducts.php", tags={"Product"},
+     *     @OA\Response(response="200", description="Sucess")
+     * )
+     */
+function readProducts(){
     // select all query
     $query = "SELECT
                 c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created
@@ -43,6 +52,22 @@ function read(){
     return $stmt;
 }
 
+    /**
+     * @OA\Post(
+     *     path="/api/product/create.php", tags={"Product"},
+     *     @OA\RequestBody(
+     *          @OA\MediaType(mediaType="application/json",
+     *              @OA\Schema(title="Criar Produto", description="", required={"name"}, type="object", 
+     *                  @OA\Property(property="name", title="name", type="string", description="name", example="Amazing Pillow 2.0"),
+     *                  @OA\Property(property="price", title="price", type="string", description="price", example="199"),
+     *                  @OA\Property(property="description", title="description", type="string", description="description", example="The best pillow for amazing programmers."),
+     *                  @OA\Property(property="category_id", title="category_id", type="string", description="category_id", example="2"),
+     *                  @OA\Property(property="created", title="created", type="string", description="created", example="2018-06-01 00:35:07"))
+     *          )
+     *     ),
+     *     @OA\Response(response="201", description="Sucess"),
+     * )
+     */
 // create product
 function create(){
   
@@ -50,7 +75,7 @@ function create(){
     $query = "INSERT INTO
                 " . $this->table_name . "
             SET
-                name=:name, price=:price, description=:description, category_id=:category_id, created=:created, image=:image";
+                name=:name, price=:price, description=:description, category_id=:category_id, created=:created";
   
     // prepare query
     $stmt = $this->conn->prepare($query);
@@ -61,7 +86,6 @@ function create(){
     $this->description=htmlspecialchars(strip_tags($this->description));
     $this->category_id=htmlspecialchars(strip_tags($this->category_id));
     $this->created=htmlspecialchars(strip_tags($this->created));
-    $this->image=htmlspecialchars(strip_tags($this->image));
   
     // bind values
     $stmt->bindParam(":name", $this->name);
@@ -69,7 +93,6 @@ function create(){
     $stmt->bindParam(":description", $this->description);
     $stmt->bindParam(":category_id", $this->category_id);
     $stmt->bindParam(":created", $this->created);
-    $stmt->bindParam(":image", $this->image);
   
     // execute query
     if($stmt->execute()){
@@ -81,6 +104,23 @@ function create(){
 }
 
 // update the product
+/**
+     * @OA\Put(
+     *     path="/api/product/update.php", tags={"Product"},
+     *     @OA\RequestBody(
+     *          @OA\MediaType(mediaType="application/json",
+     *              @OA\Schema(title="Criar Produto", description="", required={"name"}, type="object", 
+     *                  @OA\Property(property="id", title="id", type="string", description="id", example="106"),
+     *                  @OA\Property(property="name", title="name", type="string", description="name", example="Amazing Pillow 3.0"),
+     *                  @OA\Property(property="price", title="price", type="string", description="price", example="255"),
+     *                  @OA\Property(property="description", title="description", type="string", description="description", example="The best pillow for amazing programmers."),
+     *                  @OA\Property(property="category_id", title="category_id", type="string", description="category_id", example="2"))
+     *          )
+     *     ),
+     *     @OA\Response(response="200", description="Sucess"),
+     *     @OA\Response(response="503", description="Object not found"),
+     * )
+     */
 function update(){
   
     // update query
@@ -90,8 +130,7 @@ function update(){
                 name = :name,
                 price = :price,
                 description = :description,
-                category_id = :category_id,
-                image = :image
+                category_id = :category_id
             WHERE
                 id = :id";
   
@@ -104,8 +143,6 @@ function update(){
     $this->description=htmlspecialchars(strip_tags($this->description));
     $this->category_id=htmlspecialchars(strip_tags($this->category_id));
     $this->id=htmlspecialchars(strip_tags($this->id));
-    $this->image=htmlspecialchars(strip_tags($this->image));
-
   
     // bind new values
     $stmt->bindParam(':name', $this->name);
@@ -113,8 +150,7 @@ function update(){
     $stmt->bindParam(':description', $this->description);
     $stmt->bindParam(':category_id', $this->category_id);
     $stmt->bindParam(':id', $this->id);
-    $stmt->bindParam(":image", $this->image);
-
+  
     // execute the query
     if($stmt->execute()){
         return true;
@@ -123,6 +159,20 @@ function update(){
     return false;
 }
 // delete the product
+
+/**
+     * @OA\Post(
+     *     path="/api/product/delete.php", tags={"Product"},
+     *     @OA\RequestBody(
+     *          @OA\MediaType(mediaType="application/json",
+     *              @OA\Schema(title="Criar Produto", description="", required={"name"}, type="object", 
+     *                  @OA\Property(property="id", title="id", type="string", description="id", example="106"))
+     *          )
+     *     ),
+     *     @OA\Response(response="200", description="Sucess"),
+     *     @OA\Response(response="503", description="Object not found"),
+     * )
+     */
 function delete(){
   
     // delete query
@@ -145,12 +195,13 @@ function delete(){
     return false;
 }
 
+
 // used when filling up the update product form
 function readOne(){
   
     // query to read single record
     $query = "SELECT
-                c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created, p.image
+                c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created
             FROM
                 " . $this->table_name . " p
                 LEFT JOIN
@@ -179,15 +230,13 @@ function readOne(){
     $this->description = $row['description'];
     $this->category_id = $row['category_id'];
     $this->category_name = $row['category_name'];
-    $this->image = $row['image'];
 }
 
-// search products
 function search($keywords){
   
     // select all query
     $query = "SELECT
-                c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created, p.image
+                c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created
             FROM
                 " . $this->table_name . " p
                 LEFT JOIN
@@ -216,12 +265,12 @@ function search($keywords){
     return $stmt;
 }
 
-// read products with pagination
+
 public function readPaging($from_record_num, $records_per_page){
   
     // select query
     $query = "SELECT
-                c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created, p.image
+                c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created
             FROM
                 " . $this->table_name . " p
                 LEFT JOIN
@@ -244,7 +293,7 @@ public function readPaging($from_record_num, $records_per_page){
     return $stmt;
 }
 
-// used for paging products
+
 public function count(){
     $query = "SELECT COUNT(*) as total_rows FROM " . $this->table_name . "";
   
@@ -253,23 +302,6 @@ public function count(){
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
   
     return $row['total_rows'];
-}
-
-function uploadImage($sqlValor){
-    if(!empty($sqlVal)) {
-        $query = ("INSERT INTO user (images, date_time) VALUES $sqlVal");
-        if($query) {
-            $response = array(
-                "status" => "alert-success",
-                "message" => "Files successfully uploaded."
-            );
-        } else {
-            $response = array(
-                "status" => "alert-danger",
-                "message" => "Files coudn't be uploaded due to database error."
-            );
-        }
-    }
 }
 
 

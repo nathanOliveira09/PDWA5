@@ -78,4 +78,3 @@ CREATE TABLE IF NOT EXISTS images (
   created datetime NOT NULL DEFAULT current_timestamp(),
   CONSTRAINT Fk_products_images FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-

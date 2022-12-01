@@ -1,5 +1,5 @@
 <?php
-$json = file_get_contents('http://localhost/exemplo/readProducts.php');
+$json = file_get_contents('http://localhost:3000/api/product/readProducts.php');
 $obj = json_decode($json);
 echo $obj->access_token;
 

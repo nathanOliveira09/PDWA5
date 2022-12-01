@@ -25,8 +25,7 @@ if(
     !empty($data->name) &&
     !empty($data->price) &&
     !empty($data->description) &&
-    !empty($data->category_id) &&
-    !empty($data->image)
+    !empty($data->category_id)
 ){
   
     // set product property values
@@ -35,7 +34,6 @@ if(
     $product->description = $data->description;
     $product->category_id = $data->category_id;
     $product->created = date('Y-m-d H:i:s');
-    $product->image;
   
     // create the product
     if($product->create()){
